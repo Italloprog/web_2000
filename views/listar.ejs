@@ -60,7 +60,7 @@
 
         async function remover(id){
             
-            let response = await fetch('http://localhost:3000/montadoras_delete', {
+            let response = await fetch('https://web2000.onrender.com/montadoras_delete', {
                 method: 'POST',
                 body: JSON.stringify({id}),
                 headers: {
