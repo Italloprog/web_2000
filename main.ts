@@ -29,9 +29,19 @@ app.get('/index',(req: Request, res: Response)=>{
 
 app.get('/listar_montadoras', async(req: Request, res: Response)=>{
     try{
-        let response = await pool.query('select * from montadoras');
-        let montadoras = response.rows;
-        res.render('listar',{montadoras});
+        try {
+            let response = await pool.query('select * from montadoras');
+            let montadoras = response.rows;
+            res.render('listar',{montadoras});
+        }catch{
+            await pool.query('create table montadoras(id varchar primary key, nome varchar,pais varchar, ano_fundacao int)');
+            await pool.query('create table modelos(id varchar primary key,id_montadora varchar references montadoras(id),nome varchar,valor_ref int,motorizacao int,turbo boolean,automatico boolean);');
+            let response = await pool.query('select * from montadoras');
+            let montadoras = response.rows;
+            res.render('listar',{montadoras});
+        }
+        
+        
     }catch(err){
         console.error(err);
         res.status(500).send('erro ao listar montadoras!')

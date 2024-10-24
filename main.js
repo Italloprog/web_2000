@@ -33,9 +33,18 @@ app.get('/index', (req, res) => {
 //montadoras
 app.get('/listar_montadoras', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let response = yield persistence_1.default.query('select * from montadoras');
-        let montadoras = response.rows;
-        res.render('listar', { montadoras });
+        try {
+            let response = yield persistence_1.default.query('select * from montadoras');
+            let montadoras = response.rows;
+            res.render('listar', { montadoras });
+        }
+        catch (_a) {
+            yield persistence_1.default.query('create table montadoras(id varchar primary key, nome varchar,pais varchar, ano_fundacao int)');
+            yield persistence_1.default.query('create table modelos(id varchar primary key,id_montadora varchar references montadoras(id),nome varchar,valor_ref int,motorizacao int,turbo boolean,automatico boolean);');
+            let response = yield persistence_1.default.query('select * from montadoras');
+            let montadoras = response.rows;
+            res.render('listar', { montadoras });
+        }
     }
     catch (err) {
         console.error(err);
